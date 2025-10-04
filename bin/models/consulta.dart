@@ -1,13 +1,16 @@
+import 'medico.dart';
+import 'paciente.dart';
+
 class Consulta {
 
   // Atributos
-  Medico _medico;
-  Paciente _paciente;
+  Medico? _medico;
+  Paciente? _paciente;
   bool _libre = true;
 
   //Getters y Setters
-  Medico get medico => _medico;
-  Paciente get paciente => _paciente;
+  Medico? get medico => _medico;
+  Paciente? get paciente => _paciente;
   bool get libre => _libre;
 
   // Constructor
@@ -22,6 +25,5 @@ class Consulta {
   String toString() {
     return 'Consulta{_medico: $_medico, _paciente: $_paciente, _libre: $_libre}';
   }
-
 
 }

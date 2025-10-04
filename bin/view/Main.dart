@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../constructor/AppManager.dart';
+import '../controller/app_manager.dart';
 
 void main() {
   AppManager controlador = AppManager();
