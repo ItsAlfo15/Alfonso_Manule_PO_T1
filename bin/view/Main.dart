@@ -76,23 +76,40 @@ Function admisionPaciente(AppManager controlador) {
     );
 }
 
-Function liberarConsulta(AppManager controlador) {
+Function liberarConsulta(AppManager controlador){
   print("Introduce la consulta que ha sido liberada: ");
   String? consultaLibreNoParse = stdin.readLineSync();
-  if (consultaLibreNoParse == null) {
-    print("Ocurrió un error, vuelva a intenarlo");
-  } else {
+  if (consultaLibreNoParse == null){
+    print("Ocurrió un error vuelva a intenarlo");
+  }else{
     int? consultaLibreParse = int.tryParse(consultaLibreNoParse);
-    if (consultaLibreParse == null)
-      print("Ocurrió un error, vuelva a intenarlo");
-    else {
-      if (!controlador.consultaValidaParaLiberar(consultaLibreParse))
-        print("El número de consulta no es válido");
-      else {
+    if (consultaLibreParse == null) print("Ocurrió un error vuelva a intenarlo");
+    else{
+      if (!controlador.consultaValidaParaLiberar(consultaLibreParse)) print("El número de consulta no es válido");
+      else{
         Paciente siguiente = controlador.liberaConsulta(consultaLibreParse);
-        if (siguiente == null) print("");
+        if (siguiente == null) print("Consulta liberada. No hay nadie más en la cola");
+        else{
+          print('El paciente ${siguiente.getNombre()} ${siguiente.getApellidos()} ya puede pasar');
+          print('Pasa a la consulta $consultaLibreParse');
+          print('Le atenderá ${controlador.nombreMedicoEnConsulta(consultaLibreParse)}');
+        }
       }
     }
+  }
+}
+
+Function pintaCola(AppManager controlador){
+  for (Paciente p in controlador.getCola()) {
+    print(p);
+  }
+}
+
+Function pintaConsulta(Consulta c, int num){
+  print('===== Consulta $num =====');
+  print('Médico ${c.getMedico() == null ? 'Sin médico' : c.getMedico().getNombre()}');
+  if (c.getMedico() != null){
+    print('Especialidad ${c.getMedico()}')
   }
 }
 
