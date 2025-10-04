@@ -1,69 +1,122 @@
 import 'dart:io';
 
-import '../constructor/AppManager.dart';
+import '../controller/app_manager.dart';
 import '../models/paciente.dart';
+import '../models/medico.dart';
+import '../models/consulta.dart';
+import '../data/mock_Data.dart';
+
+AppManager controlador = AppManager();
 
 void main() {
-  AppManager controlador = AppManager();
+  
   int op = 0;
+
+  List<Paciente> pacientes = controlador.pacientes;
+  List<Medico> medicos = controlador.medicos; 
+  List<Consulta> consultas = controlador.consultas;
+  
+  print("=== PACIENTES ===");
+  pacientes.forEach(print);
+
+  print("\n=== MÉDICOS ===");
+  medicos.forEach(print);
+
+  print("\n=== CONSULTAS ===");
+  consultas.forEach(print);
 
   do {
     String? input = stdin.readLineSync();
-  if (input == null) {
-    print('No se recibió entrada');
-  } else {
-    int? parsed = int.tryParse(input);
-    if (parsed == null) {
-      print('Valor incorrecto, intentaló de nuevo');
+    if (input == null) {
+      print('No se recibió entrada');
     } else {
-      op = parsed;
-      switch(op){
-        case 1: //Admisión de paciente
-          admisionPaciente(controlador);
-          break;
-        case 2: //Liberar
-          liberarConsulta(controlador);
-          break;
-        case 3: //Ver cola
-          pintaCola(controlador);
-          break;
-        case 4: //Ver estado consultas
-          pintaConsultas(controlador);
-          break;
-        case 5: //Busqueda
-          buscaPacientes(controlador);
-          break;
+      int? parsed = int.tryParse(input);
+      if (parsed == null) {
+        print('Valor incorrecto, intentaló de nuevo');
+      } else {
+        op = parsed;
+        switch (op) {
+          case 1: //Admisión de paciente
+            admisionPaciente(controlador);
+            break;
+          case 2: //Liberar
+            liberarConsulta(controlador);
+            break;
+          case 3: //Ver cola
+            pintaCola(controlador);
+            break;
+          case 4: //Ver estado consultas
+            pintaConsultas(controlador);
+            break;
+          case 5: //Busqueda
+            buscaPacientes(controlador);
+            break;
+        }
       }
     }
-  }
   } while (op != 6);
-  
 }
 
-Function admisionPaciente(AppManager controlador){
+Function admisionPaciente(AppManager controlador) {
   String? dni = stdin.readLineSync();
   String? nombre = stdin.readLineSync();
   String? apellidos = stdin.readLineSync();
   String? sintomas = stdin.readLineSync();
-  int resultado = controlador.admisionPaciente(nombre, apellidos, dni, sintomas);
-  if (resultado == -1) print("No hay ninguna consulta libre, debe esperar en la cola");
-  else print("Se le ha asignado la consulta $resultado, ya puede pasar. Le atenderá ${controlador.nombreMedicoEnConsulta(resultado)}");
+  int resultado = controlador.admisionPaciente(
+    nombre,
+    apellidos,
+    dni,
+    sintomas,
+  );
+  if (resultado == -1)
+    print("No hay ninguna consulta libre, debe esperar en la cola");
+  else
+    print(
+      "Se le ha asignado la consulta $resultado, ya puede pasar. Le atenderá ${controlador.nombreMedicoEnConsulta(resultado)}",
+    );
 }
 
-Function liberarConsulta(AppManager controlador){
+Function liberarConsulta(AppManager controlador) {
   print("Introduce la consulta que ha sido liberada: ");
   String? consultaLibreNoParse = stdin.readLineSync();
-  if (consultaLibreNoParse == null){
-    print("Ocurrió un error vuelva a intenarlo");
-  }else{
+  if (consultaLibreNoParse == null) {
+    print("Ocurrió un error, vuelva a intenarlo");
+  } else {
     int? consultaLibreParse = int.tryParse(consultaLibreNoParse);
-    if (consultaLibreParse == null) print("Ocurrió un error vuelva a intenarlo");
-    else{
-      if (!controlador.consultaValidaParaLiberar(consultaLibreParse)) print("El número de consulta no es válido");
-      else{
+    if (consultaLibreParse == null)
+      print("Ocurrió un error, vuelva a intenarlo");
+    else {
+      if (!controlador.consultaValidaParaLiberar(consultaLibreParse))
+        print("El número de consulta no es válido");
+      else {
         Paciente siguiente = controlador.liberaConsulta(consultaLibreParse);
         if (siguiente == null) print("");
       }
     }
   }
+}
+
+Function pintaMenuPrincipal() {
+
+  int numConsultas = controlador.numConsultas();
+  int numConsultasLibres = controlador.numConsultasLibres();
+  int numPacientesCola = controlador.numPacientesEnCola();
+  int numPacientesCurados = controlador.numPacientesCurados();
+
+  print('''
+    Bienvenido al centro de salud de Martos
+    ==================================================
+    El número de consultas es: $numConsultas
+    Consultas libres: $numConsultasLibres
+    Atucalmente, tenemos $numPacientesCola pacientes en cola
+    Hoy hemos curado a $numPacientesCurados pacientes
+    ==================================================
+    === MENÚ PRINCIPAL ===
+    1. Admisión de un paciente
+    2. Liberar una consulta
+    3. Ver la cola de espera
+    4. Ver el estado de las consultas
+    5. Salir
+    Seleccione una opción: 
+''');
 }
