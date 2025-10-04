@@ -22,7 +22,7 @@ class AppManager {
     _consultas = MockData.getConsultas();
   }
 
-
+  
 
 
 
