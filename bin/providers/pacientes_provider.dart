@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+
 import '../models/paciente_model.dart';
 
-final url_base = 'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Pacientes.json';
+final _urlBase = 'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Pacientes.json';
 
 Future<List<Paciente>> getPacientes() async{ 
   List<Paciente> listaPacientes = [];
-  Uri uri = Uri.parse(url_base);
-  Response response = get(uri);
-  if (response.statusCode != 200) return pacientes;
+  Uri uri = Uri.parse(_urlBase);
+  Response response = await get(uri);
+  if (response.statusCode != 200) return listaPacientes;
   Map<String, dynamic> resp = jsonDecode(response.body);
   resp.forEach((id, paciente){
     Paciente pacienteTemp = Paciente.fromJson(paciente);
