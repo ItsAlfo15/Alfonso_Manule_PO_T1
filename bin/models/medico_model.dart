@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 class Medico {
   String? id;
@@ -18,4 +19,7 @@ class Medico {
     "especialidad": especialidad,
     "nombre": nombre,
   };
+
+  @override
+  String toString() => 'ID: ${id}, Nombre: ${nombre}, Especialidad: ${especialidad}';
 }

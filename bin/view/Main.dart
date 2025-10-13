@@ -9,9 +9,10 @@ import '../data/mock_Data.dart';
 
 AppManager controlador = AppManager();
 
-void main() {
+void main() async {
+  List<Medico> medicos = await getMedicos();
 
-  getMedicos();
+  medicos.forEach((medico) => print(medico));
 
   /*
   int op = 0;
