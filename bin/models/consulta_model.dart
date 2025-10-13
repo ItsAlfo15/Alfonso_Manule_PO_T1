@@ -1,5 +1,5 @@
-import 'medico.dart';
-import 'paciente.dart';
+import 'medico_model.dart';
+import 'paciente_model.dart';
 
 class Consulta {
 

@@ -1,6 +1,6 @@
-import '../models/paciente.dart';
-import '../models/medico.dart';
-import '../models/consulta.dart';
+import '../models/paciente_model.dart';
+import '../models/medico_model.dart';
+import '../models/consulta_model.dart';
 import '../data/mock_Data.dart';
 
 class AppManager {

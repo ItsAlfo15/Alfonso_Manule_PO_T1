@@ -1,6 +1,6 @@
-import '../models/medico.dart';
-import '../models/paciente.dart';
-import '../models/consulta.dart';
+import '../models/medico_model.dart';
+import '../models/paciente_model.dart';
+import '../models/consulta_model.dart';
 
 class MockData {
   // Devuelve lista de pacientes de ejemplo
