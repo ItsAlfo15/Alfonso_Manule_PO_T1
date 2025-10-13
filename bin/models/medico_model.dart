@@ -1,26 +1,21 @@
+import 'dart:convert';
+
 class Medico {
-  
-  // Atributos
-  int _id = -1;
-  String _nombre = '';
-  String _especialidad = '';
+  String? id;
+  String especialidad;
+  String nombre;
 
-  //Getters y Setters
-  int get id => _id;
-  String get nombre => _nombre;
-  String get especialidad => _especialidad;
+  Medico({required this.especialidad, required this.nombre});
 
-  // Constructor
-  Medico(int id, String nombre, String especialidad) {
-    _id = id;
-    _nombre = nombre;
-    _especialidad = especialidad;
-  }
+  factory Medico.fromRawJson(String str) => Medico.fromJson(json.decode(str));
 
-  // toString
-  @override
-  String toString() {
-    return 'Medico{_id: $_id, _nombre: $_nombre, _especialidad: $_especialidad}';
-  }
+  String toRawJson() => json.encode(toJson());
 
+  factory Medico.fromJson(Map<String, dynamic> json) =>
+      Medico(especialidad: json["especialidad"], nombre: json["nombre"]);
+
+  Map<String, dynamic> toJson() => {
+    "especialidad": especialidad,
+    "nombre": nombre,
+  };
 }

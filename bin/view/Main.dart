@@ -3,13 +3,17 @@ import 'dart:io';
 import '../controller/app_manager.dart';
 import '../models/paciente_model.dart';
 import '../models/medico_model.dart';
+import '../providers/medicos_provider.dart';
 import '../models/consulta_model.dart';
 import '../data/mock_Data.dart';
 
 AppManager controlador = AppManager();
 
 void main() {
-  
+
+  getMedicos();
+
+  /*
   int op = 0;
 
   List<Paciente> pacientes = controlador.pacientes;
@@ -136,4 +140,6 @@ Function pintaMenuPrincipal() {
     5. Salir
     Seleccione una opción: 
 ''');
+
+*/
 }
