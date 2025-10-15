@@ -1,23 +1,20 @@
 import 'dart:io';
 
 import '../controller/app_manager.dart';
+
 import '../models/paciente_model.dart';
-import '../providers/medicos_provider.dart';
 import '../models/medico_model.dart';
+import '../models/consulta_model.dart';
+
 import '../providers/pacientes_provider.dart';
-
-
-
-//AppManager controlador = AppManager();
+import '../providers/medicos_provider.dart';
+import '../providers/consulta_provider.dart';
 
 void main() async {
-  List<Medico> medicos = await getMedicos();
 
-  medicos.forEach((medico) => print(medico));
+  AppManager controlador = AppManager();
 
-   List<Paciente> pacientes = await getPacientes();
-
-  pacientes.forEach((paciente) => print(paciente));
+  print(controlador.medicos.length);
 
   /*
   int op = 0
