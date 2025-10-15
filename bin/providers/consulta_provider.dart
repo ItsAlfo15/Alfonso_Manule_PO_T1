@@ -19,7 +19,7 @@ Future<List<Consulta>> getConsultas() async{
   //Foreach para el mapa consultas
   consultasJson.forEach((id, consulta){
     Consulta consultaTemp = Consulta.fromJson(consulta);
-    consultaTemp.id = id; //La id de firebase la metemos en nuestro objeto
+    consultaTemp.idConsulta = id; //La id de firebase la metemos en nuestro objeto
     consultas.add(consultaTemp); //Añadimos la consulta al array de consultas
   });
   return consultas; //Retornamos las consultas

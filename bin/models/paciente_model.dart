@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Paciente {
-  String? id;
+  String? idPaciente;
   String apellidos;
   String dni;
   String nombre;
@@ -38,6 +38,6 @@ class Paciente {
   };
 
   @override
-  String toString() => 'ID: $id, Num Historia: $numHistoria, Nombre: $nombre, Apellidos: $apellidos, Síntomas: $sintomas';
+  String toString() => 'ID: $idPaciente, Num Historia: $numHistoria, Nombre: $nombre, Apellidos: $apellidos, Síntomas: $sintomas';
 
 }

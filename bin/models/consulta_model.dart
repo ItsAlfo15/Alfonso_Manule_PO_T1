@@ -1,29 +1,25 @@
-import 'medico_model.dart';
-import 'paciente_model.dart';
+import 'dart:convert';
 
 class Consulta {
+  String? idConsulta;
+  String idMedico;
+  String? idPaciente;
 
-  // Atributos
-  Medico? _medico;
-  Paciente? _paciente;
-  bool _libre = true;
+  Consulta({required this.idMedico, required this.idPaciente});
 
-  //Getters y Setters
-  Medico? get medico => _medico;
-  Paciente? get paciente => _paciente;
-  bool get libre => _libre;
+  factory Consulta.fromRawJson(String str) =>
+      Consulta.fromJson(json.decode(str));
 
-  // Constructor
-  Consulta(Medico medico, Paciente paciente, bool libre) {
-    _medico = medico;
-    _paciente = paciente;
-    _libre = libre;
-  }
+  String toRawJson() => json.encode(toJson());
 
-  // toString
-  @override
-  String toString() {
-    return 'Consulta{_medico: $_medico, _paciente: $_paciente, _libre: $_libre}';
-  }
+  factory Consulta.fromJson(Map<String, dynamic> json) =>
+      Consulta(idMedico: json["idMedico"], idPaciente: json["idPaciente"]);
 
+  Map<String, dynamic> toJson() => {
+    "idMedico": idMedico,
+    "idPaciente": idPaciente,
+  };
+
+   @override
+   String toString() => 'ID: $idConsulta, IDMedico: $idMedico, IDPaciente: $idPaciente';
 }

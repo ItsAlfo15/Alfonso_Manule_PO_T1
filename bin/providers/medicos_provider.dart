@@ -29,7 +29,7 @@ Future<List<Medico>> getMedicos() async {
     Medico medicoTemp = Medico.fromJson(medico);
 
     // Le asigno el id
-    medicoTemp.id = id;
+    medicoTemp.idMedico = id;
 
     // Lo añado a la lista
     listaMedicos.add(medicoTemp);
