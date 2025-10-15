@@ -32,51 +32,49 @@ class AppManager {
 
   int numConsultasLibres() {
     int cont = 0;
-    consultas.forEach((consulta) {
-      if (consulta.idPaciente == null) cont++;
-    });
+
+    for (var consulta in consultas) 
+    if (consulta.idPaciente == null) cont++;
+
     return cont;
   }
 
   int numPacientesEnCola() {
-    return -1;
+    return getCola().length;
   }
 
   int numPacientesCurados() {
     return -1;
   }
 
-  Medico? buscaMedicoByID(String? idMedicoPasado) {
-    Medico? temp;
-
-    medicos.forEach((medico) {
-      if (medico.idMedico == idMedicoPasado) temp = medico;
-    });
-
-    return temp;
+  Medico? buscaMedicoByID(String idMedicoPasado) {
+    for (var medico in medicos)
+      if (medico.idMedico == idMedicoPasado) return medico;
+    return null;
   }
 
-  Paciente? buscaPacienteByID(String? idPacientePasado) {
-    Paciente? temp;
-
-    pacientes.forEach((paciente) {
-      if (paciente.idPaciente == idPacientePasado) temp = paciente;
-    });
-
-    return temp;
+  Paciente? buscaPacienteByID(String idPacientePasado) {
+    for (var paciente in pacientes)
+      if (paciente.idPaciente == idPacientePasado) return paciente;
+    return null;
   }
 
   List<Paciente> getCola() {
-    List<Paciente> cola =  List.from(pacientes);
+    List<Paciente> cola = List.from(pacientes);
 
-    consultas.forEach((consulta) {
-      if (consulta.idPaciente != null) {
-        pacientes.forEach((paciente) {
-          if (consulta.idPaciente == paciente.idPaciente) cola.remove(paciente);
-        });
+    // Recorro las consultas
+    for (var consula in consultas) {
+      if (consula.idPaciente != null) {
+        // Recorro los pacientes
+        for (var paciente in pacientes) {
+          if (consula.idPaciente == paciente.idPaciente) cola.remove(paciente);
+        }
       }
-    });
+    }
 
     return cola;
   }
+
+
+
 }
