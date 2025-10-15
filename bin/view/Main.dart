@@ -13,13 +13,8 @@ import '../providers/consulta_provider.dart';
 void main() async {
 
   AppManager controlador = AppManager();
-
-  await controlador.getDatosControlador();
-
-  print(controlador.medicos.length);
-
-  /*
-  int op = 0
+  
+  int op = 0;
 
   List<Paciente> pacientes = controlador.pacientes;
   List<Medico> medicos = controlador.medicos; 
@@ -35,6 +30,7 @@ void main() async {
   consultas.forEach(print);
 
   do {
+    await controlador.getDatosControlador();
     String? input = stdin.readLineSync();
     if (input == null) {
       print('No se recibió entrada');
@@ -57,16 +53,14 @@ void main() async {
           case 4: //Ver estado consultas
             pintaConsultas(controlador);
             break;
-          case 5: //Busqueda
-            buscaPacientes(controlador);
-            break;
         }
       }
     }
   } while (op != 6);
-}
+}//Final del main
 
-Function admisionPaciente(AppManager controlador) {
+//Admisión de paciente
+void admisionPaciente(AppManager controlador) {
   String? dni = stdin.readLineSync();
   String? nombre = stdin.readLineSync();
   String? apellidos = stdin.readLineSync();
@@ -85,7 +79,7 @@ Function admisionPaciente(AppManager controlador) {
     );
 }
 
-Function liberarConsulta(AppManager controlador){
+void liberarConsulta(AppManager controlador){
   print("Introduce la consulta que ha sido liberada: ");
   String? consultaLibreNoParse = stdin.readLineSync();
   if (consultaLibreNoParse == null){
@@ -99,7 +93,7 @@ Function liberarConsulta(AppManager controlador){
         Paciente siguiente = controlador.liberaConsulta(consultaLibreParse);
         if (siguiente == null) print("Consulta liberada. No hay nadie más en la cola");
         else{
-          print('El paciente ${siguiente.getNombre()} ${siguiente.getApellidos()} ya puede pasar');
+          print('El paciente ${siguiente.nombre()} ${siguiente.apellidos()} ya puede pasar');
           print('Pasa a la consulta $consultaLibreParse');
           print('Le atenderá ${controlador.nombreMedicoEnConsulta(consultaLibreParse)}');
         }
@@ -108,21 +102,28 @@ Function liberarConsulta(AppManager controlador){
   }
 }
 
-Function pintaCola(AppManager controlador){
+void pintaCola(AppManager controlador){
   for (Paciente p in controlador.getCola()) {
     print(p);
   }
 }
 
-Function pintaConsulta(Consulta c, int num){
-  print('===== Consulta $num =====');
-  print('Médico ${c.getMedico() == null ? 'Sin médico' : c.getMedico().getNombre()}');
-  if (c.getMedico() != null){
-    print('Especialidad ${c.getMedico()}')
-  }
+void pintaConsultas(AppManager controlador){
+  
+  controlador.consultas.forEach((consulta){
+    Medico medicoTemp = controlador.buscarMedicoByID(consulta.idMedico);
+    Paciente pacienteTemp = controlador.buscaPacienteByID(consulta.idPaciente);
+    print('*****Consulta ${consulta.idConsulta}*******')
+    print('Nombre del médico: ${medicoTemp.nombre}');
+    print('Especialidad: ${medicoTemp.especialidad}');
+    print('Paciente: ${pacienteTemp.nombre} ${pacienteTemp.apellidos}');
+    print('Num_historia: ${pacienteTemp.numHistoria}');
+  });
+    
+  
 }
 
-Function pintaMenuPrincipal() {
+void pintaMenuPrincipal(AppManager controlador) {
 
   int numConsultas = controlador.numConsultas();
   int numConsultasLibres = controlador.numConsultasLibres();
@@ -146,5 +147,5 @@ Function pintaMenuPrincipal() {
     Seleccione una opción: 
 ''');
 
-*/
+
 }
