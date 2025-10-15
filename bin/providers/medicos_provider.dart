@@ -24,6 +24,7 @@ Future<List<Medico>> getMedicos() async {
 
   // Recorro el mapa y genero un nuevo medico asignandole el id
   resp.forEach((id, medico) {
+    
     // Creo el medido
     Medico medicoTemp = Medico.fromJson(medico);
 

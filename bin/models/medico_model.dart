@@ -21,5 +21,6 @@ class Medico {
   };
 
   @override
-  String toString() => 'ID: ${id}, Nombre: ${nombre}, Especialidad: ${especialidad}';
+  String toString() => 'ID: $id, Nombre: $nombre, Especialidad: $especialidad';
+
 }
