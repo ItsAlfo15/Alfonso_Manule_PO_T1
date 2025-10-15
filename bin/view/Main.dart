@@ -11,15 +11,14 @@ import '../providers/medicos_provider.dart';
 import '../providers/consulta_provider.dart';
 
 void main() async {
-
   AppManager controlador = AppManager();
-  
+
   int op = 0;
 
   List<Paciente> pacientes = controlador.pacientes;
-  List<Medico> medicos = controlador.medicos; 
+  List<Medico> medicos = controlador.medicos;
   List<Consulta> consultas = controlador.consultas;
-  
+
   print("=== PACIENTES ===");
   pacientes.forEach(print);
 
@@ -56,8 +55,8 @@ void main() async {
         }
       }
     }
-  } while (op != 6);
-}//Final del main
+  } while (op != 5);
+} //Final del main
 
 //Admisión de paciente
 void admisionPaciente(AppManager controlador) {
@@ -79,52 +78,57 @@ void admisionPaciente(AppManager controlador) {
     );
 }
 
-void liberarConsulta(AppManager controlador){
+void liberarConsulta(AppManager controlador) {
   print("Introduce la consulta que ha sido liberada: ");
   String? consultaLibreNoParse = stdin.readLineSync();
-  if (consultaLibreNoParse == null){
+  if (consultaLibreNoParse == null) {
     print("Ocurrió un error vuelva a intenarlo");
-  }else{
+  } else {
     int? consultaLibreParse = int.tryParse(consultaLibreNoParse);
-    if (consultaLibreParse == null) print("Ocurrió un error vuelva a intenarlo");
-    else{
-      if (!controlador.consultaValidaParaLiberar(consultaLibreParse)) print("El número de consulta no es válido");
-      else{
+    if (consultaLibreParse == null)
+      print("Ocurrió un error vuelva a intenarlo");
+    else {
+      if (!controlador.consultaValidaParaLiberar(consultaLibreParse))
+        print("El número de consulta no es válido");
+      else {
         Paciente siguiente = controlador.liberaConsulta(consultaLibreParse);
-        if (siguiente == null) print("Consulta liberada. No hay nadie más en la cola");
-        else{
-          print('El paciente ${siguiente.nombre()} ${siguiente.apellidos()} ya puede pasar');
+        if (siguiente == null)
+          print("Consulta liberada. No hay nadie más en la cola");
+        else {
+          print(
+            'El paciente ${siguiente.nombre()} ${siguiente.apellidos()} ya puede pasar',
+          );
           print('Pasa a la consulta $consultaLibreParse');
-          print('Le atenderá ${controlador.nombreMedicoEnConsulta(consultaLibreParse)}');
+          print(
+            'Le atenderá ${controlador.nombreMedicoEnConsulta(consultaLibreParse)}',
+          );
         }
       }
     }
   }
 }
 
-void pintaCola(AppManager controlador){
+void pintaCola(AppManager controlador) {
   for (Paciente p in controlador.getCola()) {
     print(p);
   }
 }
 
-void pintaConsultas(AppManager controlador){
-  
-  controlador.consultas.forEach((consulta){
-    Medico medicoTemp = controlador.buscarMedicoByID(consulta.idMedico);
-    Paciente pacienteTemp = controlador.buscaPacienteByID(consulta.idPaciente);
-    print('*****Consulta ${consulta.idConsulta}*******')
-    print('Nombre del médico: ${medicoTemp.nombre}');
-    print('Especialidad: ${medicoTemp.especialidad}');
-    print('Paciente: ${pacienteTemp.nombre} ${pacienteTemp.apellidos}');
-    print('Num_historia: ${pacienteTemp.numHistoria}');
+void pintaConsultas(AppManager controlador) {
+  controlador.consultas.forEach((consulta) {
+    Medico? medicoTemp = controlador.buscaMedicoByID(consulta.idMedico);
+    Paciente? pacienteTemp = controlador.buscaPacienteByID(consulta.idPaciente);
+    if (medicoTemp != null && pacienteTemp != null) {
+      print('*****Consulta ${consulta.idConsulta}*******');
+      print('Nombre del médico: ${medicoTemp.nombre}');
+      print('Especialidad: ${medicoTemp.especialidad}');
+      print('Paciente: ${pacienteTemp.nombre} ${pacienteTemp.apellidos}');
+      print('Num_historia: ${pacienteTemp.numHistoria}');
+    }
   });
-    
-  
 }
 
 void pintaMenuPrincipal(AppManager controlador) {
-
   int numConsultas = controlador.numConsultas();
   int numConsultasLibres = controlador.numConsultasLibres();
   int numPacientesCola = controlador.numPacientesEnCola();
@@ -146,6 +150,4 @@ void pintaMenuPrincipal(AppManager controlador) {
     5. Salir
     Seleccione una opción: 
 ''');
-
-
 }

@@ -46,7 +46,7 @@ class AppManager {
     return -1;
   }
 
-  Medico? buscaMedicoByID(String idMedicoPasado) {
+  Medico? buscaMedicoByID(String? idMedicoPasado) {
     Medico? temp;
 
     medicos.forEach((medico) {
@@ -56,7 +56,7 @@ class AppManager {
     return temp;
   }
 
-  Paciente? buscaPacienteByID(String idPacientePasado) {
+  Paciente? buscaPacienteByID(String? idPacientePasado) {
     Paciente? temp;
 
     pacientes.forEach((paciente) {

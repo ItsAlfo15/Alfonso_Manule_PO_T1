@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Consulta {
   String? idConsulta;
-  String idMedico;
+  String? idMedico;
   String? idPaciente;
 
   Consulta({required this.idMedico, required this.idPaciente});
