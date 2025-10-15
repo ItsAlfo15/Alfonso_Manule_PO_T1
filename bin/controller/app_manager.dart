@@ -16,8 +16,14 @@ class AppManager {
 
   // Getters y Setters
 
+  getDatosControlador() async{
+    medicos = await getMedicos();
+    pacientes = await getPacientes();
+    consultas = await getConsultas();
+  }
+
   // Constructor
   AppManager() {
-    getMedicos().then((data) => medicos = data);
+  
   }
 }

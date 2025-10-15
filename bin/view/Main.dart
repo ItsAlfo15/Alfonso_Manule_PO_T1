@@ -14,6 +14,8 @@ void main() async {
 
   AppManager controlador = AppManager();
 
+  await controlador.getDatosControlador();
+
   print(controlador.medicos.length);
 
   /*
