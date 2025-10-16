@@ -17,8 +17,6 @@ import '../providers/consulta_provider.dart';
 void main() async {
   AppManager controlador = AppManager();
 
-  controlador.generaNumHistoria();
-
   int op = 0;
 
   do {
@@ -30,7 +28,7 @@ void main() async {
 
     switch (op) {
       case 1: //Admisión de paciente
-        admisionPaciente(controlador);
+        await admisionPaciente(controlador);
         break;
       case 2: //Liberar
         //liberarConsulta(controlador);
@@ -52,7 +50,7 @@ void main() async {
 } //Final del main
 
 //Admisión de paciente
-void admisionPaciente(AppManager controlador) async {
+Future<void> admisionPaciente(AppManager controlador) async {
   Paciente paciente = registroPaciente(controlador);
 
   bool pacienteCreado = await controlador.insertaPaciente(paciente);
