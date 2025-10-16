@@ -15,48 +15,35 @@ void main() async {
 
   int op = 0;
 
-  List<Paciente> pacientes = controlador.pacientes;
-  List<Medico> medicos = controlador.medicos;
-  List<Consulta> consultas = controlador.consultas;
-
-  print("=== PACIENTES ===");
-  pacientes.forEach(print);
-
-  print("\n=== MÉDICOS ===");
-  medicos.forEach(print);
-
-  print("\n=== CONSULTAS ===");
-  consultas.forEach(print);
-
   do {
+  
     await controlador.getDatosControlador();
-    String? input = stdin.readLineSync();
-    if (input == null) {
-      print('No se recibió entrada');
-    } else {
-      int? parsed = int.tryParse(input);
-      if (parsed == null) {
-        print('Valor incorrecto, intentaló de nuevo');
-      } else {
-        op = parsed;
-        switch (op) {
-          case 1: //Admisión de paciente
-            admisionPaciente(controlador);
-            break;
-          case 2: //Liberar
-            liberarConsulta(controlador);
-            break;
-          case 3: //Ver cola
-            pintaCola(controlador);
-            break;
-          case 4: //Ver estado consultas
-            pintaConsultas(controlador);
-            break;
-        }
-      }
+
+    op = menuPrincipal(controlador);
+
+    switch (op) {
+      case 1: //Admisión de paciente
+        admisionPaciente(controlador);
+        break;
+      case 2: //Liberar
+        liberarConsulta(controlador);
+        break;
+      case 3: //Ver cola
+        pintaCola(controlador);
+        break;
+      case 4: //Ver estado consultas
+        pintaConsultas(controlador);
+        break;
+      case 5:
+        print("Saliendo...");
+        break;
+      default:
+      print('Debes introducir una opción del menú.');
+      stdin.readLineSync();
     }
   } while (op != 5);
 } //Final del main
+
 
 //Admisión de paciente
 void admisionPaciente(AppManager controlador) {
@@ -64,7 +51,7 @@ void admisionPaciente(AppManager controlador) {
   String? nombre = stdin.readLineSync();
   String? apellidos = stdin.readLineSync();
   String? sintomas = stdin.readLineSync();
-  int resultado = controlador.admisionPaciente(
+  int resultado = controlador.insertaPaciente(
     nombre,
     apellidos,
     dni,
@@ -78,12 +65,19 @@ void admisionPaciente(AppManager controlador) {
     );
 }
 
+
+
 void liberarConsulta(AppManager controlador) {
-  print("Introduce la consulta que ha sido liberada: ");
-  String? consultaLibreNoParse = stdin.readLineSync();
-  if (consultaLibreNoParse == null) {
-    print("Ocurrió un error vuelva a intenarlo");
-  } else {
+
+  String? consultaLibreNoParse;
+
+  do {
+    print("Introduce la consulta que ha sido liberada: ");
+    consultaLibreNoParse = stdin.readLineSync();
+    if (consultaLibreNoParse == null) 
+    print("Error, debes introducir un");
+  } while (consultaLibreNoParse == null);
+
     int? consultaLibreParse = int.tryParse(consultaLibreNoParse);
     if (consultaLibreParse == null)
       print("Ocurrió un error vuelva a intenarlo");
@@ -92,17 +86,15 @@ void liberarConsulta(AppManager controlador) {
         print("El número de consulta no es válido");
       else {
         Paciente siguiente = controlador.liberaConsulta(consultaLibreParse);
-        if (siguiente == null)
+        if (consulta.idCliente == null)
           print("Consulta liberada. No hay nadie más en la cola");
         else {
           print(
-            'El paciente ${siguiente.nombre()} ${siguiente.apellidos()} ya puede pasar',
+            'El paciente ${siguiente.nombre} ${siguiente.apellidos} ya puede pasar',
           );
           print('Pasa a la consulta $consultaLibreParse');
-          print(
-            'Le atenderá ${controlador.nombreMedicoEnConsulta(consultaLibreParse)}',
-          );
-        }
+          Medico temp = controlador.recuperaMedicoConsulta(consultaLibreParse);
+          print('Le atenderá ${temp.nombre}');
       }
     }
   }
@@ -128,6 +120,9 @@ void pintaConsultas(AppManager controlador) {
   });
 }
 
+// Menus
+
+// Metodo que pinta el menu principal
 void pintaMenuPrincipal(AppManager controlador) {
   int numConsultas = controlador.numConsultas();
   int numConsultasLibres = controlador.numConsultasLibres();
@@ -150,4 +145,19 @@ void pintaMenuPrincipal(AppManager controlador) {
     5. Salir
     Seleccione una opción: 
 ''');
+
+}
+
+// Metodo que devuelve una opcion valida
+int menuPrincipal(AppManager controlador) {
+  int? op;
+
+  do {
+
+    pintaMenuPrincipal(controlador);
+    op = int.tryParse(stdin.readLineSync() ?? '');
+
+  } while(op == null);
+
+  return op;
 }
