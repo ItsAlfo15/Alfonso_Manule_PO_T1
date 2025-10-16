@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math';
 
 import '../models/paciente_model.dart';
 import '../models/medico_model.dart';
@@ -35,7 +36,7 @@ class AppManager {
     int cont = 0;
 
     for (var consulta in consultas) {
-        if (consulta.idPaciente == '') cont++;
+      if (consulta.idPaciente == '') cont++;
     }
 
     return cont;
@@ -81,9 +82,28 @@ class AppManager {
     return cola;
   }
 
-  bool insertaPaciente(String? dni, String? nombre, String? apellidos, String? sintomas){
-    if (dni == null || nombre == null || apellidos == null || sintomas == null) return false;
-    Paciente pacienteTemp = new Paciente(apellidos: apellidos, dni: dni, nombre: nombre, numHistoria: numHistoria, sintomas: sintomas)
+  int generaNumHistoria() {
+    Random random = Random();
+    int numGenerado;
+
+    do {
+      numGenerado = random.nextInt(90000) + 10000;
+    } while (existeNumHistoriaPaciente(numGenerado));
+
+    return numGenerado;
   }
 
+  bool existeNumHistoriaPaciente(int numGenerado) {
+    for (var paciente in pacientes) {
+      if (paciente.numHistoria == numGenerado) return true;
+    }
+    return false;
+  }
+
+  Future<bool> insertaPaciente(Paciente paciente) async {
+    int code = await postPaciente(paciente);
+    // 200 indica que la peticion se ha realizado con exito
+    // 201 indica que se ha creado el elemento en la BBDD se usa en los post
+    return code == 200 || code == 201;
+  }
 }

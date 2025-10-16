@@ -4,10 +4,10 @@ import 'package:http/http.dart';
 
 import '../models/paciente_model.dart';
 
-final _urlBase = 'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Pacientes.json';
+final _urlBase =
+    'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Pacientes.json';
 
-Future<List<Paciente>> getPacientes() async{ 
-
+Future<List<Paciente>> getPacientes() async {
   // Primero genero la lista que voy a devolver
   List<Paciente> listaPacientes = [];
 
@@ -24,8 +24,7 @@ Future<List<Paciente>> getPacientes() async{
   Map<String, dynamic> resp = jsonDecode(response.body);
 
   // Recorro el mapa y genero un nuevo paciente asignandole el id
-  resp.forEach((id, paciente){
-
+  resp.forEach((id, paciente) {
     // Creo el paciente
     Paciente pacienteTemp = Paciente.fromJson(paciente);
 
@@ -38,4 +37,14 @@ Future<List<Paciente>> getPacientes() async{
 
   // Devuelvo la lista de pacientes
   return listaPacientes;
+}
+
+Future<int> postPaciente(Paciente paciente) async {
+  Uri uri = Uri.parse(_urlBase);
+
+  Response response = await post(uri, 
+  headers: {"Content-Type" : "application/json"},
+  body: jsonEncode(paciente.toJson()));
+
+  return response.statusCode;
 }
