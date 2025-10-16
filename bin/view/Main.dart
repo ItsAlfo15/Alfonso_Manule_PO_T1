@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:mirrors';
+import 'dart:vmservice_io';
 import '../utils/utils.dart';
 
 import '../controller/app_manager.dart';
@@ -29,7 +30,7 @@ void main() async {
 
     switch (op) {
       case 1: //Admisión de paciente
-        //admisionPaciente(controlador);
+        admisionPaciente(controlador);
         break;
       case 2: //Liberar
         //liberarConsulta(controlador);
@@ -54,13 +55,14 @@ void main() async {
 void admisionPaciente(AppManager controlador) async {
   Paciente paciente = registroPaciente(controlador);
 
-  bool pacienteCreado = await controlador.insertaPaciente(paciente)
+  bool pacienteCreado = await controlador.insertaPaciente(paciente);
 
   if (pacienteCreado)
     print('El paciente se ha registrado correctamente');
   else
     print('Hubo un error con la inserción del paciente.');
-    
+
+  Utils.pulsaContinuar();
 }
 
 Paciente registroPaciente(AppManager controlador) {
@@ -90,13 +92,13 @@ String pideDniPaciente() {
 
   // Pido el DNI y verifico que no este vacio
   do {
-    print('Introduce el DNI del paciente:');
+    print('Introduce el DNI del paciente: ');
     dni = stdin.readLineSync();
 
-    if (dni != '' || dni == null) {
+    if (dni == null || dni.trim().isEmpty) {
       print('Error, Debes introducir un valor');
     }
-  } while (dni != '' || dni == null);
+  } while (dni == null || dni.trim().isEmpty);
 
   return dni;
 }
@@ -106,13 +108,13 @@ String pideNombrePaciente() {
 
   // Pido el nombre y verifico que no este vacio
   do {
-    print('Introduce el nombre del paciente:');
+    print('Introduce el nombre del paciente: ');
     nombre = stdin.readLineSync();
 
-    if (nombre != '' || nombre == null) {
+    if (nombre == null || nombre.trim().isEmpty) {
       print('Error, Debes introducir un valor');
     }
-  } while (nombre != '' || nombre == null);
+  } while (nombre == null || nombre.trim().isEmpty);
 
   return nombre;
 }
@@ -122,13 +124,13 @@ String pideApellidosPaciente() {
 
   // Pido los apellidos y verifico que no esten vacios
   do {
-    print('Introduce los apellidos del paciente');
+    print('Introduce los apellidos del paciente: ');
     apellidos = stdin.readLineSync();
 
-    if (apellidos != '' || apellidos == null) {
+    if (apellidos == null || apellidos.trim().isEmpty) {
       print('Error, Debes introducir un valor');
     }
-  } while (apellidos != '' || apellidos == null);
+  } while (apellidos == null || apellidos.trim().isEmpty);
 
   return apellidos;
 }
@@ -138,13 +140,13 @@ String pideSintomasPaciente() {
 
   // Pido los sitomas y verifico que no esten vacios
   do {
-    print('Introduce los sintomas del paciente');
+    print('Introduce los sintomas del paciente ');
     sintomas = stdin.readLineSync();
 
-    if (sintomas != '' || sintomas == null) {
+    if (sintomas == null || sintomas.trim().isEmpty) {
       print('Error, Debes introducir un valor');
     }
-  } while (sintomas != '' || sintomas == null);
+  } while (sintomas == null || sintomas.trim().isEmpty);
 
   return sintomas;
 }
