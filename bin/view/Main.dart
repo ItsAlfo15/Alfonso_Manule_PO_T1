@@ -68,7 +68,7 @@ void admisionPaciente(AppManager controlador) {
     nombre,
     apellidos,
     dni,
-    sintomas,
+    sintomas
   );
   if (resultado == -1)
     print("No hay ninguna consulta libre, debe esperar en la cola");

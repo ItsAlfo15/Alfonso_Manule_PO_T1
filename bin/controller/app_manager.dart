@@ -47,13 +47,13 @@ class AppManager {
     return -1;
   }
 
-  Medico? buscaMedicoByID(String idMedicoPasado) {
+  Medico? buscaMedicoByID(String? idMedicoPasado) {
     for (var medico in medicos)
       if (medico.idMedico == idMedicoPasado) return medico;
     return null;
   }
 
-  Paciente? buscaPacienteByID(String idPacientePasado) {
+  Paciente? buscaPacienteByID(String? idPacientePasado) {
     for (var paciente in pacientes)
       if (paciente.idPaciente == idPacientePasado) return paciente;
     return null;
