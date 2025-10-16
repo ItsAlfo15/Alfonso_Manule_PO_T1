@@ -18,9 +18,9 @@ class AppManager {
 
   // Inicializacion de datos
   getDatosControlador() async {
-    medicos = await getMedicos();
-    pacientes = await getPacientes();
-    consultas = await getConsultas();
+    medicos = await MedicosProvider.getMedicos();
+    pacientes = await PacientesProvider.getPacientes();
+    consultas = await ConsultasProvider.getConsultas();
   }
 
   // Constructor
@@ -101,9 +101,35 @@ class AppManager {
   }
 
   Future<bool> insertaPaciente(Paciente paciente) async {
-    int code = await postPaciente(paciente);
+    int code = await PacientesProvider.postPaciente(paciente);
     // 200 indica que la peticion se ha realizado con exito
     // 201 indica que se ha creado el elemento en la BBDD se usa en los post
     return code == 200 || code == 201;
+  }
+
+  Future<Consulta?> asignaPacienteConsulta(Paciente paciente) async {
+    // Recorro las consultas y agrego al paciente a la que este vacia
+    for (var consulta in consultas) {
+      if (consulta.idPaciente == null) {
+        
+        // Asigno al paciente a la consulta vacia
+        consulta.idPaciente = paciente.idPaciente;
+
+        // Actualizo la consulta
+        int code = await ConsultasProvider.putConsulta(consulta);
+
+        // En caso de fallo devuelvo null
+        if (code != 200) {
+          consulta.idPaciente = null;
+          return null;
+        }
+
+        // Retorno la consulta
+        return consulta;
+      }
+    }
+
+    // Si no hay consultas disponibles devuelvo null
+    return null;
   }
 }

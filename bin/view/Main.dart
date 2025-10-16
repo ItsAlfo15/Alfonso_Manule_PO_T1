@@ -55,12 +55,28 @@ Future<void> admisionPaciente(AppManager controlador) async {
 
   bool pacienteCreado = await controlador.insertaPaciente(paciente);
 
-  if (pacienteCreado)
-    print('El paciente se ha registrado correctamente');
-  else
+  if (pacienteCreado) {
+
+    Consulta? posibleConsulta = await controlador.asignaPacienteConsulta(paciente);
+
+    if (posibleConsulta != null) {
+      int numConsulta = controlador.consultas.indexOf(posibleConsulta) + 1;
+      print('Se le ha asignado a la consulta $numConsulta, ya puede pasar');
+      Medico? medicoTemp = controlador.buscaMedicoByID(
+        posibleConsulta.idMedico,
+      );
+      print('Le atenderá ${medicoTemp!.nombre}');
+
+    } else {
+      print('No hay ninguna consulta libre, deberá esperar su turno');
+    }
+
+  } else {
     print('Hubo un error con la inserción del paciente.');
+  }
 
   Utils.pulsaContinuar();
+  
 }
 
 Paciente registroPaciente(AppManager controlador) {

@@ -2,7 +2,7 @@ import 'dart:io';
 
 class Utils {
   static void pulsaContinuar() {
-    print('Pulsa para continuar...');
+    print('Pulsa "Enter" para continuar...');
     stdin.readLineSync();
   }
 
