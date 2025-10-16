@@ -81,6 +81,9 @@ class AppManager {
     return cola;
   }
 
-
+  bool insertaPaciente(String? dni, String? nombre, String? apellidos, String? sintomas){
+    if (dni == null || nombre == null || apellidos == null || sintomas == null) return false;
+    Paciente pacienteTemp = new Paciente(apellidos: apellidos, dni: dni, nombre: nombre, numHistoria: numHistoria, sintomas: sintomas)
+  }
 
 }

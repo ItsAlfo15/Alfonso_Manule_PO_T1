@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../utils/utils.dart';
 
 import '../controller/app_manager.dart';
 
@@ -16,10 +17,11 @@ void main() async {
   int op = 0;
 
   do {
-  
+    print('Cargando datos...');
     await controlador.getDatosControlador();
 
     op = menuPrincipal(controlador);
+    Utils.limpiaPantalla();
 
     switch (op) {
       case 1: //Admisión de paciente
@@ -38,34 +40,28 @@ void main() async {
         print("Saliendo...");
         break;
       default:
-      print('Debes introducir una opción del menú.');
-      stdin.readLineSync();
+        print('Debes introducir una opción del menú.');
+        stdin.readLineSync();
     }
   } while (op != 5);
 } //Final del main
 
-/*
 //Admisión de paciente
 void admisionPaciente(AppManager controlador) {
+  print('Insercción de un nuevo paciente');
+  print('Introduce el DNI del paciente:');
   String? dni = stdin.readLineSync();
+  print('Introduce el nombre del paciente:');
   String? nombre = stdin.readLineSync();
+  print('Introduce los apellidos del paciente');
   String? apellidos = stdin.readLineSync();
+  print('Introduce los sintomas del paciente');
   String? sintomas = stdin.readLineSync();
-  int resultado = controlador.insertaPaciente(
-    nombre,
-    apellidos,
-    dni,
-    sintomas
-  );
-  if (resultado == -1)
-    print("No hay ninguna consulta libre, debe esperar en la cola");
-  else
-    print(
-      "Se le ha asignado la consulta $resultado, ya puede pasar. Le atenderá ${controlador.nombreMedicoEnConsulta(resultado)}",
-    );
+  if (controlador.insertaPaciente(dni, nombre, apellidos, sintomas)){
+    print('Se te ha añadido a una consulta con el médico ${controlador.buscaMedicoBy(idMedicoPasado)}')
+  }
 }
 
-*/
 /*
 void liberarConsulta(AppManager controlador) {
 
@@ -101,9 +97,14 @@ void liberarConsulta(AppManager controlador) {
 }
 */
 void pintaCola(AppManager controlador) {
-  for (Paciente p in controlador.getCola()) {
-    print(p);
-  }
+  if (!controlador.getCola().isEmpty) {
+    for (Paciente p in controlador.getCola()) {
+      print(p);
+    }
+  } else
+    print('No hay ningún paciente en la cola');
+
+  Utils.pulsaContinuar();
 }
 
 void pintaConsultas(AppManager controlador) {
@@ -113,13 +114,13 @@ void pintaConsultas(AppManager controlador) {
     Medico? medicoTemp = controlador.buscaMedicoByID(consulta.idMedico);
     Paciente? pacienteTemp = controlador.buscaPacienteByID(consulta.idPaciente);
 
-    String mensajeAPintar = pacienteTemp != null 
-    ? '${pacienteTemp.nombre} ${pacienteTemp.apellidos}'
-    : 'Sin paciente en la sala';
+    String mensajeAPintar = pacienteTemp != null
+        ? '${pacienteTemp.nombre} ${pacienteTemp.apellidos}'
+        : 'Sin paciente en la sala';
 
-    String numHistoria = pacienteTemp != null 
-    ? '${pacienteTemp.numHistoria}'
-    : '-----';
+    String numHistoria = pacienteTemp != null
+        ? '${pacienteTemp.numHistoria}'
+        : '-----';
 
     if (medicoTemp != null) {
       cont++;
@@ -130,9 +131,9 @@ void pintaConsultas(AppManager controlador) {
       print('Num_historia: $numHistoria');
       print('========================================\n');
     }
-
   });
-
+  Utils.pulsaContinuar();
+  Utils.limpiaPantalla();
 }
 
 // Menus
@@ -161,7 +162,6 @@ Hoy hemos curado a $numPacientesCurados pacientes
 5. Salir
 Seleccione una opción: 
 ''');
-
 }
 
 // Metodo que devuelve una opcion valida
@@ -169,11 +169,9 @@ int menuPrincipal(AppManager controlador) {
   int? op;
 
   do {
-
     pintaMenuPrincipal(controlador);
     op = int.tryParse(stdin.readLineSync() ?? '');
-
-  } while(op == null);
+  } while (op == null);
 
   return op;
 }
