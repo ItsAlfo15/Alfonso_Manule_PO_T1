@@ -15,8 +15,7 @@ class AppManager {
   List<Paciente> pacientes = [];
   List<Consulta> consultas = [];
 
-  // Getters y Setters
-
+  // Inicializacion de datos
   getDatosControlador() async {
     medicos = await getMedicos();
     pacientes = await getPacientes();
@@ -25,6 +24,8 @@ class AppManager {
 
   // Constructor
   AppManager();
+
+  // Funciones
 
   int numConsultas() {
     return consultas.length;
@@ -60,13 +61,15 @@ class AppManager {
   }
 
   List<Paciente> getCola() {
-    List<Paciente> cola = List.from(pacientes);
+    // Me traigo todos los pacientes
+    List<Paciente> cola = pacientes.toList();
 
     // Recorro las consultas
     for (var consula in consultas) {
       if (consula.idPaciente != null) {
         // Recorro los pacientes
         for (var paciente in pacientes) {
+          // Si hay un paciente en consulta lo elimino de la cola
           if (consula.idPaciente == paciente.idPaciente) cola.remove(paciente);
         }
       }
