@@ -145,20 +145,21 @@ void pintaMenuPrincipal(AppManager controlador) {
   int numPacientesCurados = controlador.numPacientesCurados();
 
   print('''
-    Bienvenido al centro de salud de Martos
-    ==================================================
-    El número de consultas es: $numConsultas
-    Consultas libres: $numConsultasLibres
-    Atucalmente, tenemos $numPacientesCola pacientes en cola
-    Hoy hemos curado a $numPacientesCurados pacientes
-    ==================================================
-    === MENÚ PRINCIPAL ===
-    1. Admisión de un paciente
-    2. Liberar una consulta
-    3. Ver la cola de espera
-    4. Ver el estado de las consultas
-    5. Salir
-    Seleccione una opción: 
+\nBienvenido al centro de salud de Martos
+==================================================
+El número de consultas es: $numConsultas
+Consultas libres: $numConsultasLibres
+Atucalmente, tenemos $numPacientesCola pacientes en cola
+Hoy hemos curado a $numPacientesCurados pacientes
+==================================================
+
+===== MENÚ PRINCIPAL =====
+1. Admisión de un paciente
+2. Liberar una consulta
+3. Ver la cola de espera
+4. Ver el estado de las consultas
+5. Salir
+Seleccione una opción: 
 ''');
 
 }

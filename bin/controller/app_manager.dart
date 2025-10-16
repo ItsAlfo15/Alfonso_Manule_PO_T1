@@ -34,8 +34,9 @@ class AppManager {
   int numConsultasLibres() {
     int cont = 0;
 
-    for (var consulta in consultas) 
-    if (consulta.idPaciente == null) cont++;
+    for (var consulta in consultas) {
+        if (consulta.idPaciente == '') cont++;
+    }
 
     return cont;
   }
@@ -49,14 +50,16 @@ class AppManager {
   }
 
   Medico? buscaMedicoByID(String? idMedicoPasado) {
-    for (var medico in medicos)
+    for (var medico in medicos) {
       if (medico.idMedico == idMedicoPasado) return medico;
+    }
     return null;
   }
 
   Paciente? buscaPacienteByID(String? idPacientePasado) {
-    for (var paciente in pacientes)
+    for (var paciente in pacientes) {
       if (paciente.idPaciente == idPacientePasado) return paciente;
+    }
     return null;
   }
 
