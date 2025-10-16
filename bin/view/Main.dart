@@ -23,10 +23,10 @@ void main() async {
 
     switch (op) {
       case 1: //Admisión de paciente
-        admisionPaciente(controlador);
+        //admisionPaciente(controlador);
         break;
       case 2: //Liberar
-        liberarConsulta(controlador);
+        //liberarConsulta(controlador);
         break;
       case 3: //Ver cola
         pintaCola(controlador);
@@ -44,7 +44,7 @@ void main() async {
   } while (op != 5);
 } //Final del main
 
-
+/*
 //Admisión de paciente
 void admisionPaciente(AppManager controlador) {
   String? dni = stdin.readLineSync();
@@ -65,8 +65,8 @@ void admisionPaciente(AppManager controlador) {
     );
 }
 
-
-
+*/
+/*
 void liberarConsulta(AppManager controlador) {
 
   String? consultaLibreNoParse;
@@ -99,7 +99,7 @@ void liberarConsulta(AppManager controlador) {
     }
   }
 }
-
+*/
 void pintaCola(AppManager controlador) {
   for (Paciente p in controlador.getCola()) {
     print(p);
@@ -107,17 +107,32 @@ void pintaCola(AppManager controlador) {
 }
 
 void pintaConsultas(AppManager controlador) {
+  int cont = 0;
+
   controlador.consultas.forEach((consulta) {
     Medico? medicoTemp = controlador.buscaMedicoByID(consulta.idMedico);
     Paciente? pacienteTemp = controlador.buscaPacienteByID(consulta.idPaciente);
-    if (medicoTemp != null && pacienteTemp != null) {
-      print('*****Consulta ${consulta.idConsulta}*******');
+
+    String mensajeAPintar = pacienteTemp != null 
+    ? '${pacienteTemp.nombre} ${pacienteTemp.apellidos}'
+    : 'Sin paciente en la sala';
+
+    String numHistoria = pacienteTemp != null 
+    ? '${pacienteTemp.numHistoria}'
+    : '-----';
+
+    if (medicoTemp != null) {
+      cont++;
+      print('============== Consulta $cont ==============');
       print('Nombre del médico: ${medicoTemp.nombre}');
       print('Especialidad: ${medicoTemp.especialidad}');
-      print('Paciente: ${pacienteTemp.nombre} ${pacienteTemp.apellidos}');
-      print('Num_historia: ${pacienteTemp.numHistoria}');
+      print('Paciente: $mensajeAPintar');
+      print('Num_historia: $numHistoria');
+      print('========================================\n');
     }
+
   });
+
 }
 
 // Menus
