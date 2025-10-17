@@ -7,8 +7,10 @@ import '../models/paciente_model.dart';
 final _urlBase =
     'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Pacientes.json';
 
+final _urlBaseNoJson =
+    'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Pacientes';
+
 class PacientesProvider {
-  
   static Future<List<Paciente>> getPacientes() async {
     // Primero genero la lista que voy a devolver
     List<Paciente> listaPacientes = [];
@@ -41,7 +43,32 @@ class PacientesProvider {
     return listaPacientes;
   }
 
-  static Future<int> postPaciente(Paciente paciente) async {
+  static Future<Paciente?> getPaciente(Paciente paciente) async {
+    if (paciente.idPaciente == null || paciente.idPaciente!.isEmpty) {
+      return null;
+    }
+
+    Paciente? temp;
+
+    Uri uri = Uri.parse('$_urlBaseNoJson/${paciente.idPaciente}.json');
+
+    Response response = await get(uri);
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    // Creo el mapa con la data del response
+    Map<String, dynamic> resp = jsonDecode(response.body);
+
+    temp = Paciente.fromJson(resp);
+
+    temp.idPaciente = paciente.idPaciente;
+
+    return temp;
+  }
+
+  static Future<String?> postPaciente(Paciente paciente) async {
     Uri uri = Uri.parse(_urlBase);
 
     Response response = await post(
@@ -50,6 +77,10 @@ class PacientesProvider {
       body: jsonEncode(paciente.toJson()),
     );
 
-    return response.statusCode;
+    // Devuelvo el id que me genera firebase
+    if (response.statusCode == 200 || response.statusCode == 201) 
+    return jsonDecode(response.body)['name'];
+
+    return null;
   }
 }

@@ -27,7 +27,6 @@ class AppManager {
   AppManager();
 
   // Funciones
-
   int numConsultas() {
     return consultas.length;
   }
@@ -101,26 +100,33 @@ class AppManager {
   }
 
   Future<bool> insertaPaciente(Paciente paciente) async {
-    int code = await PacientesProvider.postPaciente(paciente);
-    // 200 indica que la peticion se ha realizado con exito
-    // 201 indica que se ha creado el elemento en la BBDD se usa en los post
-    return code == 200 || code == 201;
+    String? idGenerado = await PacientesProvider.postPaciente(paciente);
+
+    if (idGenerado != null) {
+      // Asigno el idGenerado al paciente
+      paciente.idPaciente = idGenerado;
+      return true;
+    }
+    return false;
   }
 
-  Future<Consulta?> asignaPacienteConsulta(Paciente paciente) async {
+  Future<Consulta?> asignaPacienteConsulta(Paciente? paciente) async {
+    if (paciente == null) return null;
+
     // Recorro las consultas y agrego al paciente a la que este vacia
     for (var consulta in consultas) {
-      if (consulta.idPaciente == null) {
-        
+      if (consulta.idPaciente == '') {
         // Asigno al paciente a la consulta vacia
         consulta.idPaciente = paciente.idPaciente;
+
+        consulta.libre = false;
 
         // Actualizo la consulta
         int code = await ConsultasProvider.putConsulta(consulta);
 
         // En caso de fallo devuelvo null
         if (code != 200) {
-          consulta.idPaciente = null;
+          consulta.idPaciente = '';
           return null;
         }
 
@@ -131,5 +137,9 @@ class AppManager {
 
     // Si no hay consultas disponibles devuelvo null
     return null;
+  }
+
+  Future<Paciente?> recuperaPaciente(Paciente paciente) async {
+    return PacientesProvider.getPaciente(paciente);
   }
 }

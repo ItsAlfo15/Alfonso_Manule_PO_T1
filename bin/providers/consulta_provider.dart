@@ -6,6 +6,9 @@ import 'package:http/http.dart';
 final _urlBase =
     'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Consultas.json';
 
+final _urlBaseNoJson =
+    'https://alfonso-manule-po-t1-default-rtdb.europe-west1.firebasedatabase.app/Consultas';
+
 //Async porque devuelve un Future asíncrono
 class ConsultasProvider {
   static Future<List<Consulta>> getConsultas() async {
@@ -33,7 +36,7 @@ class ConsultasProvider {
   }
 
   static Future<int> putConsulta(Consulta consulta) async {
-    Uri uri = Uri.parse(_urlBase);
+    Uri uri = Uri.parse('$_urlBaseNoJson/${consulta.idConsulta}.json');
 
     Response response = await put(
       uri,

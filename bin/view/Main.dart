@@ -21,6 +21,7 @@ void main() async {
 
   do {
     print('Cargando datos...');
+
     await controlador.getDatosControlador();
 
     op = menuPrincipal(controlador);
@@ -55,9 +56,14 @@ Future<void> admisionPaciente(AppManager controlador) async {
 
   bool pacienteCreado = await controlador.insertaPaciente(paciente);
 
-  if (pacienteCreado) {
+  await controlador.getDatosControlador();
 
-    Consulta? posibleConsulta = await controlador.asignaPacienteConsulta(paciente);
+  Paciente? pacienteActualizado = controlador.buscaPacienteByID(paciente.idPaciente);
+
+  if (pacienteCreado) {
+    Consulta? posibleConsulta = await controlador.asignaPacienteConsulta(
+      pacienteActualizado,
+    );
 
     if (posibleConsulta != null) {
       int numConsulta = controlador.consultas.indexOf(posibleConsulta) + 1;
@@ -66,17 +72,14 @@ Future<void> admisionPaciente(AppManager controlador) async {
         posibleConsulta.idMedico,
       );
       print('Le atenderá ${medicoTemp!.nombre}');
-
     } else {
       print('No hay ninguna consulta libre, deberá esperar su turno');
     }
-
   } else {
     print('Hubo un error con la inserción del paciente.');
   }
 
   Utils.pulsaContinuar();
-  
 }
 
 Paciente registroPaciente(AppManager controlador) {
