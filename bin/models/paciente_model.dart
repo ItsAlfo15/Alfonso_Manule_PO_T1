@@ -7,6 +7,7 @@ class Paciente {
   String nombre;
   int numHistoria;
   String sintomas;
+  String? fechaCurado;
 
   Paciente({
     required this.apellidos,
@@ -35,6 +36,7 @@ class Paciente {
     "nombre": nombre,
     "numHistoria": numHistoria,
     "sintomas": sintomas,
+    "fechaCurado" : fechaCurado ?? '',
   };
 
   @override
