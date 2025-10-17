@@ -14,7 +14,7 @@ void main() async {
   int op = 0;
 
   do {
-    print('Cargando datos...');
+    Utils.animacionCargando('Cargando datos');
 
     await controlador.getDatosControlador();
 
@@ -37,7 +37,7 @@ void main() async {
         Utils.limpiaPantalla();
         break;
       case 5: // Salir
-        print("Saliendo...");
+        Utils.animacionCargando('Saliendo');
         break;
       default:
         print('Debes introducir una opción del menú.');
