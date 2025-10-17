@@ -63,6 +63,13 @@ class AppManager {
     return null;
   }
 
+  Consulta? buscaConsultaByID(String? idConsultaPasada) {
+    for (var consulta in consultas) {
+      if (consulta.idConsulta == idConsultaPasada) return consulta;
+    }
+    return null;
+  }
+
   List<Paciente> getCola() {
     // Me traigo todos los pacientes
     List<Paciente> cola = pacientes.toList();
@@ -74,9 +81,12 @@ class AppManager {
         for (var paciente in pacientes) {
           // Si hay un paciente en consulta lo elimino de la cola
           if (consula.idPaciente == paciente.idPaciente) cola.remove(paciente);
+          if (paciente.fechaCurado != '') cola.remove(paciente);
         }
       }
     }
+
+    
 
     return cola;
   }
@@ -139,20 +149,52 @@ class AppManager {
     return null;
   }
 
-  bool consultaValidaParaLiberar(int numConsulta){
-    Consulta consultaElegida = consultas[numConsulta - 1];
-    if (consultaElegida.libre == true) return false;
+  Future<bool> liberaConsulta(int numConsulta) async {
+
+    // Verifico si la consulta existe
+    if ((numConsulta) > consultas.length || numConsulta <= 0) return false;
+
+    // Me traigo la consulta elegida
+    Consulta temp = consultas[numConsulta - 1];
+    Consulta? consulta = buscaConsultaByID(temp.idConsulta);
+
+    if (consulta == null) return false;
+    
+    // Me traigo el paciente de la consulta
+    Paciente? pacienteCurado = buscaPacienteByID(consulta.idPaciente);
+    if (pacienteCurado == null) return false;
+
+    // Modifico los valores de la consulta
+    consulta.idPaciente = '';
+    consulta.libre = true;
+
+    // Le asignno la fecha en la que ha sido curado
+    pacienteCurado.fechaCurado = DateTime.now().toString();
+
+    // Actualizo la consulta y el paciente
+    int statusCodeConsulta = await ConsultasProvider.putConsulta(consulta);
+    int statusCodePaciente = await PacientesProvider.putPaciente(pacienteCurado);
+
+    if (statusCodeConsulta != 200 || statusCodePaciente != 200) return false;
+
     return true;
   }
 
-  Paciente? liberaConsulta(int numConsulta){
-    Consulta consultaElegida = consultas[numConsulta - 1];
-    Paciente? pacienteCurado = buscaPacienteByID(consultaElegida.idPaciente);
-    consultaElegida.idPaciente = '';
-    consultaElegida.libre = true;
-    if (pacienteCurado != null) pacienteCurado.fechaCurado = DateTime.now().toString();
+  Future<Paciente?> asignaSiguientePacienteConsulta(Consulta consultaPasada) async {
+    Consulta? consultaLiberada = buscaConsultaByID(consultaPasada.idConsulta);
+    if (consultaLiberada == null) return null;
+
+    if (getCola().isEmpty) return null;
+
+    return getCola().first;
+  }
+
+  Medico? recuperaMedicoConsulta(Consulta consulta) {
+    return buscaMedicoByID(consulta.idMedico);
 
   }
+
+
 
   Future<Paciente?> recuperaPaciente(Paciente paciente) async {
     return PacientesProvider.getPaciente(paciente);

@@ -83,4 +83,16 @@ class PacientesProvider {
 
     return null;
   }
+
+  static Future<int> putPaciente(Paciente paciente) async {
+    Uri uri = Uri.parse('$_urlBaseNoJson/${paciente.idPaciente}.json');
+
+    Response response = await put(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(paciente.toJson()),
+    );
+
+    return response.statusCode;
+  }
 }

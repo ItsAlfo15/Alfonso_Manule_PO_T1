@@ -32,13 +32,15 @@ void main() async {
         await admisionPaciente(controlador);
         break;
       case 2: //Liberar
-        //liberarConsulta(controlador);
+        await liberarConsulta(controlador);
         break;
       case 3: //Ver cola
         pintaCola(controlador);
         break;
       case 4: //Ver estado consultas
         pintaConsultas(controlador);
+        Utils.pulsaContinuar();
+        Utils.limpiaPantalla();
         break;
       case 5:
         print("Saliendo...");
@@ -99,6 +101,7 @@ Paciente registroPaciente(AppManager controlador) {
     nombre: nombre,
     numHistoria: controlador.generaNumHistoria(),
     sintomas: sintomas,
+    fechaRegistro: DateTime.now().toString(),
     fechaCurado: ''
   );
 
@@ -170,37 +173,48 @@ String pideSintomasPaciente() {
 }
 
 
-void liberarConsulta(AppManager controlador) {
+Future<void> liberarConsulta(AppManager controlador) async {
 
-  String? consultaLibreNoParse;
+  String? numConsultaIntroducida;
+  int? numConsulta;
 
+  // Pido el num de la consulta, lo parseo y verifico
   do {
-    print("Introduce la consulta que ha sido liberada: ");
-    consultaLibreNoParse = stdin.readLineSync();
-    if (consultaLibreNoParse == null) 
-    print("Error, debes introducir un");
-  } while (consultaLibreNoParse == null);
+    pintaConsultas(controlador);
 
-    int? consultaLibreParse = int.tryParse(consultaLibreNoParse);
-    if (consultaLibreParse == null)
-      print("Ocurrió un error vuelva a intenarlo");
-    else {
-      if (!controlador.consultaValidaParaLiberar(consultaLibreParse))
-        print("El número de consulta no es válido");
-      else {
-        Paciente siguiente = controlador.liberaConsulta(consultaLibreParse);
-        if (consulta.idCliente == null)
-          print("Consulta liberada. No hay nadie más en la cola");
-        else {
-          print(
-            'El paciente ${siguiente.nombre} ${siguiente.apellidos} ya puede pasar',
-          );
-          print('Pasa a la consulta $consultaLibreParse');
-          Medico temp = controlador.recuperaMedicoConsulta(consultaLibreParse);
-          print('Le atenderá ${temp.nombre}');
-      }
+    print("\nIntroduce la consulta que ha sido liberada: ");
+    numConsultaIntroducida = stdin.readLineSync();
+
+    numConsulta = int.tryParse(numConsultaIntroducida!) ?? -1;
+
+    if (numConsulta == -1) {
+      print('Error, debes seleccionar una consulta.');
+      Utils.pulsaContinuar();
+      Utils.limpiaPantalla();
     }
-  }
+
+    if (! await controlador.liberaConsulta(numConsulta)) numConsulta = -1;
+    else {
+      Consulta temp = controlador.consultas[numConsulta - 1];
+      Consulta? consultaLiberada = controlador.buscaConsultaByID(temp.idConsulta);
+      Paciente? siguientePaciente;
+      Medico? medicoEnConsulta;
+
+      if (consultaLiberada == null) numConsulta = -1;
+      else {
+        if (consultaLiberada.idPaciente == '') {
+          siguientePaciente = await controlador.asignaSiguientePacienteConsulta(consultaLiberada);
+          medicoEnConsulta = controlador.recuperaMedicoConsulta(consultaLiberada);
+
+          if (siguientePaciente != null && medicoEnConsulta != null) {
+          print('El paciente ${siguientePaciente.nombre} ${siguientePaciente.apellidos} ya puede pasar');
+          print('Pasa a la consulta $numConsulta');
+          print('Le atenderá ${medicoEnConsulta.nombre}');
+          } else print('No hay pacientes en cola');
+        }
+      } 
+    }
+  } while (numConsulta == -1);
 }
 
 void pintaCola(AppManager controlador) {
@@ -239,8 +253,7 @@ void pintaConsultas(AppManager controlador) {
       print('========================================\n');
     }
   });
-  Utils.pulsaContinuar();
-  Utils.limpiaPantalla();
+  
 }
 
 // Menus

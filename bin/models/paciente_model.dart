@@ -7,6 +7,7 @@ class Paciente {
   String nombre;
   int numHistoria;
   String sintomas;
+  String? fechaRegistro;
   String? fechaCurado;
 
   Paciente({
@@ -15,6 +16,7 @@ class Paciente {
     required this.nombre,
     required this.numHistoria,
     required this.sintomas,
+    required this.fechaRegistro,
     required this.fechaCurado
   });
 
@@ -29,6 +31,7 @@ class Paciente {
     nombre: json["nombre"],
     numHistoria: json["numHistoria"],
     sintomas: json["sintomas"],
+    fechaRegistro: json['fechaRegistro'],
     fechaCurado: json["fechaCurado"],
   );
 
@@ -38,6 +41,7 @@ class Paciente {
     "nombre": nombre,
     "numHistoria": numHistoria,
     "sintomas": sintomas,
+    "fechaRegistro": DateTime.now().toString(),
     "fechaCurado" : fechaCurado ?? '',
   };
 
