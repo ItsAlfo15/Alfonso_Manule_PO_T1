@@ -19,12 +19,17 @@ class ConsultasProvider {
     Uri uri = Uri.parse(_urlBase);
     Response response = await get(uri);
 
+    
+
     if (response.statusCode != 200)
       return consultas; //Si la respuesta no es OK abortamos y retonarmos el array vacío
 
     Map<String, dynamic> consultasJson = jsonDecode(
       response.body,
     ); //Creamos el mapa de las consultas sobre el cuerpo de la respuesta mediante jsonDecode
+
+    if (response.body.isEmpty || response.body == '""') return consultas;
+
     //Foreach para el mapa consultas
     consultasJson.forEach((id, consulta) {
       Consulta consultaTemp = Consulta.fromJson(consulta);

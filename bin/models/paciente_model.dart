@@ -41,7 +41,7 @@ class Paciente {
     "nombre": nombre,
     "numHistoria": numHistoria,
     "sintomas": sintomas,
-    "fechaRegistro": DateTime.now().toString(),
+    "fechaRegistro": fechaRegistro,
     "fechaCurado" : fechaCurado ?? '',
   };
 

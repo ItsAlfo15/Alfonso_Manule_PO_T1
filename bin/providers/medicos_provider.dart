@@ -21,6 +21,8 @@ class MedicosProvider {
     // Devuelvo una lista vacia en caso de error
     if (response.statusCode != 200) return listaMedicos;
 
+    if (response.body.isEmpty || response.body == '""') return listaMedicos;
+
     // Creo el mapa con la data del response
     final Map<String, dynamic> resp = jsonDecode(response.body);
 

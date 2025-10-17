@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:math';
-import 'dart:mirrors';
-import 'dart:vmservice_io';
+
 import '../utils/utils.dart';
 
 import '../controller/app_manager.dart';
@@ -9,10 +7,6 @@ import '../controller/app_manager.dart';
 import '../models/paciente_model.dart';
 import '../models/medico_model.dart';
 import '../models/consulta_model.dart';
-
-import '../providers/pacientes_provider.dart';
-import '../providers/medicos_provider.dart';
-import '../providers/consulta_provider.dart';
 
 void main() async {
   AppManager controlador = AppManager();
@@ -42,7 +36,7 @@ void main() async {
         Utils.pulsaContinuar();
         Utils.limpiaPantalla();
         break;
-      case 5:
+      case 5: // Salir
         print("Saliendo...");
         break;
       default:
@@ -52,6 +46,8 @@ void main() async {
   } while (op != 5);
 } //Final del main
 
+// Metodos
+
 //Admisión de paciente
 Future<void> admisionPaciente(AppManager controlador) async {
   Paciente paciente = registroPaciente(controlador);
@@ -60,7 +56,9 @@ Future<void> admisionPaciente(AppManager controlador) async {
 
   await controlador.getDatosControlador();
 
-  Paciente? pacienteActualizado = controlador.buscaPacienteByID(paciente.idPaciente);
+  Paciente? pacienteActualizado = controlador.buscaPacienteByID(
+    paciente.idPaciente,
+  );
 
   if (pacienteCreado) {
     Consulta? posibleConsulta = await controlador.asignaPacienteConsulta(
@@ -82,6 +80,7 @@ Future<void> admisionPaciente(AppManager controlador) async {
   }
 
   Utils.pulsaContinuar();
+  Utils.limpiaPantalla();
 }
 
 Paciente registroPaciente(AppManager controlador) {
@@ -101,8 +100,8 @@ Paciente registroPaciente(AppManager controlador) {
     nombre: nombre,
     numHistoria: controlador.generaNumHistoria(),
     sintomas: sintomas,
-    fechaRegistro: DateTime.now().toString(),
-    fechaCurado: ''
+    fechaRegistro: DateTime.now().toIso8601String(),
+    fechaCurado: null,
   );
 
   return paciente;
@@ -172,9 +171,7 @@ String pideSintomasPaciente() {
   return sintomas;
 }
 
-
 Future<void> liberarConsulta(AppManager controlador) async {
-
   String? numConsultaIntroducida;
   int? numConsulta;
 
@@ -192,40 +189,69 @@ Future<void> liberarConsulta(AppManager controlador) async {
       Utils.pulsaContinuar();
       Utils.limpiaPantalla();
     }
+  } while (numConsulta == -1);
 
-    if (! await controlador.liberaConsulta(numConsulta)) numConsulta = -1;
-    else {
-      Consulta temp = controlador.consultas[numConsulta - 1];
-      Consulta? consultaLiberada = controlador.buscaConsultaByID(temp.idConsulta);
-      Paciente? siguientePaciente;
-      Medico? medicoEnConsulta;
+  if (!await controlador.liberaConsulta(numConsulta)) {
+    print('Error, esta consulta esta vacía');
+    Utils.pulsaContinuar();
+    Utils.limpiaPantalla();
+    return;
+  } else {
+    Consulta temp = controlador.consultas[numConsulta - 1];
+    Consulta? consultaLiberada = controlador.buscaConsultaByID(temp.idConsulta);
+    Paciente? siguientePaciente;
+    Medico? medicoEnConsulta;
 
-      if (consultaLiberada == null) numConsulta = -1;
-      else {
-        if (consultaLiberada.idPaciente == '') {
-          siguientePaciente = await controlador.asignaSiguientePacienteConsulta(consultaLiberada);
-          medicoEnConsulta = controlador.recuperaMedicoConsulta(consultaLiberada);
+    if (consultaLiberada == null) {
+      print('Error, no se encontró la consulta');
+      Utils.pulsaContinuar();
+      Utils.limpiaPantalla();
+      return;
+    } else {
+      if (consultaLiberada.idPaciente == '') {
+        siguientePaciente = await controlador.asignaSiguientePacienteConsulta(
+          consultaLiberada,
+        );
+        medicoEnConsulta = controlador.recuperaMedicoConsulta(consultaLiberada);
 
-          if (siguientePaciente != null && medicoEnConsulta != null) {
-          print('El paciente ${siguientePaciente.nombre} ${siguientePaciente.apellidos} ya puede pasar');
+        if (siguientePaciente != null && medicoEnConsulta != null) {
+          print(
+            'El paciente ${siguientePaciente.nombre} ${siguientePaciente.apellidos} ya puede pasar',
+          );
           print('Pasa a la consulta $numConsulta');
           print('Le atenderá ${medicoEnConsulta.nombre}');
-          } else print('No hay pacientes en cola');
-        }
-      } 
+        } else
+          print('No hay pacientes en cola');
+
+        Utils.pulsaContinuar();
+        Utils.limpiaPantalla();
+
+      }
     }
-  } while (numConsulta == -1);
+  }
 }
 
 void pintaCola(AppManager controlador) {
-  if (!controlador.getCola().isEmpty) {
-    for (Paciente p in controlador.getCola()) {
-      print(p);
+  List<Paciente> pacientesEnCola = controlador.getCola();
+
+  if (pacientesEnCola.isNotEmpty) {
+    print('Ahora mismo hay ${pacientesEnCola.length} pacientes esperando.\n');
+
+    for (Paciente paciente in pacientesEnCola) {
+      print(
+        "============ Paciente ${pacientesEnCola.indexOf(paciente) + 1} en la cola ============",
+      );
+      print("         ***** Datos de paciente *****\n");
+      print("Nombre del paciente: ${paciente.nombre} ${paciente.apellidos}");
+      print("Historia del paciente: ${paciente.numHistoria}");
+      print("Síntomas del paciente: ${paciente.sintomas}");
+      print("===============================================\n");
     }
   } else
     print('No hay ningún paciente en la cola');
 
   Utils.pulsaContinuar();
+  Utils.limpiaPantalla();
 }
 
 void pintaConsultas(AppManager controlador) {
@@ -253,7 +279,6 @@ void pintaConsultas(AppManager controlador) {
       print('========================================\n');
     }
   });
-  
 }
 
 // Menus
@@ -265,23 +290,22 @@ void pintaMenuPrincipal(AppManager controlador) {
   int numPacientesCola = controlador.numPacientesEnCola();
   int numPacientesCurados = controlador.numPacientesCurados();
 
-  print('''
-\nBienvenido al centro de salud de Martos
-==================================================
-El número de consultas es: $numConsultas
-Consultas libres: $numConsultasLibres
-Atucalmente, tenemos $numPacientesCola pacientes en cola
-Hoy hemos curado a $numPacientesCurados pacientes
-==================================================
+  print("\nBienvenido al centro de salud de Martos");
+  print("==================================================");
+  print("El número de consultas es: $numConsultas");
+  print("Consultas libres: $numConsultasLibres");
+  print("Actualmente, tenemos $numPacientesCola pacientes en cola");
+  print("Hoy hemos curado a $numPacientesCurados pacientes");
+  print("==================================================\n");
 
-===== MENÚ PRINCIPAL =====
-1. Admisión de un paciente
-2. Liberar una consulta
-3. Ver la cola de espera
-4. Ver el estado de las consultas
-5. Salir
-Seleccione una opción: 
-''');
+  print("===== MENÚ PRINCIPAL =====");
+  print("1. Admisión de un paciente");
+  print("2. Liberar una consulta");
+  print("3. Ver la cola de espera");
+  print("4. Ver el estado de las consultas");
+  print("5. Salir");
+  print("Seleccione una opción: ");
+
 }
 
 // Metodo que devuelve una opcion valida

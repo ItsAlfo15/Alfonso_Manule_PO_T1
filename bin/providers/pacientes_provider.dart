@@ -24,6 +24,8 @@ class PacientesProvider {
     // Devuelvo una lista vacia en caso de error
     if (response.statusCode != 200) return listaPacientes;
 
+    if (response.body.isEmpty || response.body == '""') return listaPacientes;
+
     // Creo el mapa con la data del response
     Map<String, dynamic> resp = jsonDecode(response.body);
 
@@ -78,8 +80,8 @@ class PacientesProvider {
     );
 
     // Devuelvo el id que me genera firebase
-    if (response.statusCode == 200 || response.statusCode == 201) 
-    return jsonDecode(response.body)['name'];
+    if (response.statusCode == 200 || response.statusCode == 201)
+      return jsonDecode(response.body)['name'];
 
     return null;
   }
