@@ -99,6 +99,7 @@ Paciente registroPaciente(AppManager controlador) {
     nombre: nombre,
     numHistoria: controlador.generaNumHistoria(),
     sintomas: sintomas,
+    fechaCurado: ''
   );
 
   return paciente;
@@ -168,7 +169,7 @@ String pideSintomasPaciente() {
   return sintomas;
 }
 
-/*
+
 void liberarConsulta(AppManager controlador) {
 
   String? consultaLibreNoParse;
@@ -201,7 +202,7 @@ void liberarConsulta(AppManager controlador) {
     }
   }
 }
-*/
+
 void pintaCola(AppManager controlador) {
   if (!controlador.getCola().isEmpty) {
     for (Paciente p in controlador.getCola()) {

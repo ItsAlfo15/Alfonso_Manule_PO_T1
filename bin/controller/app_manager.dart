@@ -139,6 +139,21 @@ class AppManager {
     return null;
   }
 
+  bool consultaValidaParaLiberar(int numConsulta){
+    Consulta consultaElegida = consultas[numConsulta - 1];
+    if (consultaElegida.libre == true) return false;
+    return true;
+  }
+
+  Paciente? liberaConsulta(int numConsulta){
+    Consulta consultaElegida = consultas[numConsulta - 1];
+    Paciente? pacienteCurado = buscaPacienteByID(consultaElegida.idPaciente);
+    consultaElegida.idPaciente = '';
+    consultaElegida.libre = true;
+    if (pacienteCurado != null) pacienteCurado.fechaCurado = DateTime.now().toString();
+
+  }
+
   Future<Paciente?> recuperaPaciente(Paciente paciente) async {
     return PacientesProvider.getPaciente(paciente);
   }
