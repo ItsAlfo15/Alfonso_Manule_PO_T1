@@ -15,6 +15,7 @@ class Paciente {
     required this.nombre,
     required this.numHistoria,
     required this.sintomas,
+    required this.fechaCurado
   });
 
   factory Paciente.fromRawJson(String str) =>
@@ -28,6 +29,7 @@ class Paciente {
     nombre: json["nombre"],
     numHistoria: json["numHistoria"],
     sintomas: json["sintomas"],
+    fechaCurado: json["fechaCurado"],
   );
 
   Map<String, dynamic> toJson() => {
